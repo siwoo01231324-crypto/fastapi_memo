@@ -75,7 +75,7 @@ BaseTableModel.metadata.create_all(bind=engine)
 
 @app.get("/")
 def home(req : Request):
-    return { "title":"메모 서비스" }
+    return templates.TemplateResponse('memo.html', {"request":req})
 
 # restful 방식으로 URL 설계중 -> CRUD -> 기능만 구현중!!(화면 x) -> API 구현중
 # 메모 신규 생성
