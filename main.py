@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Depends
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy import create_engine, Column, Integer, String
@@ -77,12 +77,32 @@ BaseTableModel.metadata.create_all(bind=engine)
 def home(req : Request):
     return { "title":"메모 서비스" }
 
-# restful 방식으로 URL 설계중 -> CRUD 
+# restful 방식으로 URL 설계중 -> CRUD -> 기능만 구현중!!(화면 x) -> API 구현중
 # 메모 신규 생성
 # 로그인및 사용자 인증 정보 x
 # post 방식 : 대량의 텍스트 전송 필요
+# Depends(get_connection) : 
+# -> 디비 커넥션 풀을 통해서 관리하고 잇는 커넥션 1개를 빌려옴. 의존성주입:DI(차후에 이해)
 @app.post("/memo/")
-async def create_memo():
+async def create_memo(memo : MemoInsert, 
+                   db_conn : Session = Depends(get_connection)):
+    '''
+    - 입력 ( parameters )
+        - memo    : 테이블에 추가할 메모 데이터(제목,내용) => DTO => MemoInsert
+        - db_conn : 해당 메모를 데이터베이스에 삽입 => 디비 커넥션(세션) 1개 획득(빌림)
+    - 처리
+        - 메모 데이터를 이용하여 Memo 클레스기반 객체 1개 생성
+        - db_conn을 이용하여 데이터베이스에 추가
+        - db_conn을 이용하여 커밋처리
+        - db_conn을 이용하여 이용하여 새로고침 처리
+    - 출력
+        - 결과 반환(필요시 정보 추가)
+    '''
+    #### 처리 ####
+    # 메모 데이터를 이용하여 Memo 클레스기반 객체 1개 생성
+    # db_conn을 이용하여 데이터베이스에 추가
+    # db_conn을 이용하여 커밋처리
+    # db_conn을 이용하여 이용하여 새로고침 처리
     pass
 
 # 메모 조회 -> 최대로 가봐야 페이지번호 -> get
