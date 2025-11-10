@@ -124,8 +124,13 @@ async def create_memo(memo : MemoInsert,
     }
 
 # 메모 조회 -> 최대로 가봐야 페이지번호 -> get
+# 모든 메모 조회 (select * from memo;)하는 API
 @app.get("/memo/")
-async def select_memo():
+async def select_memo(db_conn : Session = Depends(get_connection)):
+    # query(Memo) : memo 테이블에 결과물(셋)은  Memo 클레스에 담겠다
+    # all() : select * from memo; 이 쿼리를 수행하여 
+    #         Memo 객체를 리스트로 담아서 반환
+    return db_conn.query(Memo).all()
     pass
 
 # 메모 수정 -> 조건식 필요 -> 메모를 특정할수 있는 (고유)값필요
