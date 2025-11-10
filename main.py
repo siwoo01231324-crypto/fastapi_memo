@@ -76,3 +76,28 @@ BaseTableModel.metadata.create_all(bind=engine)
 @app.get("/")
 def home(req : Request):
     return { "title":"메모 서비스" }
+
+# restful 방식으로 URL 설계중 -> CRUD 
+# 메모 신규 생성
+# 로그인및 사용자 인증 정보 x
+# post 방식 : 대량의 텍스트 전송 필요
+@app.post("/memo/")
+async def create_memo():
+    pass
+
+# 메모 조회 -> 최대로 가봐야 페이지번호 -> get
+@app.get("/memo/")
+async def select_memo():
+    pass
+
+# 메모 수정 -> 조건식 필요 -> 메모를 특정할수 있는 (고유)값필요
+# 경로 매개변수를 통해서 메모 데이터의 고유한 ID를 전달 -> 일반적 디자인
+@app.put("/memo/{memo_id}")
+async def select_memo():
+    pass
+
+# 메모 삭제 -> 조건식 필요-> 메모를 특정할수 있는 (고유)값필요
+# 경로 매개변수를 통해서 메모 데이터의 고유한 ID를 전달 -> 일반적 디자인
+@app.delete("/memo/{memo_id}")
+async def select_memo():
+    pass
