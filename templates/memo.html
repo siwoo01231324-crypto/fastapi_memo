@@ -216,7 +216,7 @@
                 <textarea id="content-{{ memo.id }}" class="form-control memo-content"
                     readonly>{{ memo.content }}</textarea>
                 <div class="edit-buttons">
-                    <button class="btn btn-edit"><i class="fas fa-edit"></i></button>
+                    <button class="btn btn-edit" onclick="toggleEditUpdateMemo({{ memo.id }});"><i class="fas fa-edit"></i></button>
                     <button class="btn btn-delete" onclick="deleteMemo({{ memo.id }});"><i
                             class="fas fa-trash-alt"></i></button>
                 </div>
@@ -268,7 +268,22 @@
                 })
         }
 
+        function toggleEditUpdateMemo(memo_id) {    
+            console.log("편집 토글 + 메모 업데이트", memo_id)
+            // 1. 요소 특정 -> input, textarea
+            let titleElement    =  document.getElementById("title-" + memo_id);
+            let contentElement  =  document.getElementById("content-" + memo_id);
+            console.log(titleElement.readOnly);
+            let curIsEdit       =  titleElement.readOnly; // 현재 편집모드
+            // 토글 처리
+            // T -> F / F -> T 바꿔주는 처리
+            titleElement.readOnly   = !curIsEdit;
+            contentElement.readOnly = !curIsEdit;
+            if (curIsEdit) { // 편집 가능할때 편집 진행
+                 
+            }
+        }
     </script>
-</body>
+</body> 
 
 </html>
