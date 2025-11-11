@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 # 데이터를 담는 그릇의 역활 -> DTO 구성
 from pydantic import BaseModel
 # 암호화 관련 모듈 
-from passlib.context import CryptContext
+import bcrypt
 # ---------------------------------------------------------------------------------------------------------
 #
 #   전역변수 : 앱, 템플릿, 정적폴더, ORM 설정
@@ -46,18 +46,19 @@ class UserLogin(BaseModel):
     username : str
     password : str # 가입할때는 암호화 하기 전 비밀번호다/ 고객이 입력할때 암호화하고 기억하진 않으니까
 
-# 해싱 도구 생성
-# bcrypt: 해싱 처리할때 사용할 기본 알고리즘중 하나를 지정, 산업 표준 사용하는 대표 알고리즘
-password_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
 # 암호화 함수 
 # 일반 비밀번호 입력 => 해시 처리된 비밀번호를 반환
 def get_hashed_password( password:str):
-    return password_context.hash(password)
-# get_hashed_password2 = lambda password: password_context.hash (password)
+    return bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode('utf-8')
 
+# hash_pwd= get_hashed_password("1234")
+# print("1234" , hash_pwd)
 # 일반 비밀번호, 해시된 비밀번호 입력 => 유효성 검사 (동일한 비밀번호인가?)
 def check_vaild_password(ori_password, hashed_password):
-    return password_context.verify(ori_password, hashed_password)
+    return bcrypt.checkpw(ori_password.encode("utf-8"), hashed_password.encode("utf-8"))
+# print(check_vaild_password("1234" , hash_pwd))
+
 
 # 테이블 구성 -> 메모 관련 마스터 테이블 클레스
 # BaseTableModel을 상속받음으로써 ORM 모델 되고->테이블 구성하게 됨 : 규칙
