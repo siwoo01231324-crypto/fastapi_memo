@@ -182,7 +182,7 @@
             <div class="card-body">
                 <input type="text" id="new-title" placeholder="새 메모 제목" class="form-control memo-title">
                 <textarea id="new-content" placeholder="내용을 입력하세요" class="form-control memo-content"></textarea>
-                <button class="btn btn-primary btn-block">메모 추가</button>
+                <button class="btn btn-primary btn-block" onclick="createMemo();">메모 추가</button>
             </div>
         </div>
 
@@ -200,5 +200,34 @@
         </div>
         {% endfor %}
     </div>
+    <script>
+        function createMemo() {
+            // 1. 메모의 제목, 내용 획득 -> 데이터 -> 담는 그릇 -> 변수
+            //    요소(element)특정(제공되는 함수 or css selector or xpath) -> 값 추출 혹은 조작 혹은 이벤트 ...
+            let memo_title   = document.getElementById("new-title").value;
+            let memo_content = document.getElementById("new-content").value;
+            console.log("메모 신규 등록 처리", memo_title , memo_content)
+            // 2. 통신 -> fetch(), post방식, json 형식으로 데이터 전송 
+            fetch("/memo/", {
+                method : "POST",
+                headers : { // 서버측에게 전달하는 데이터는 JSON형식임을 통보
+                    "Content-Type" : "application/json"
+                },
+                // body = 객체 = 딕셔너리 = json => 문자열로 변환해서 통신 처리함
+                //        객체를 문자열로 변환하는거 : 객체 직렬화
+                //        문자열을 객체로 변환하는거 : 객체 역직렬화
+                body : JSON.stringify ({
+                "title" : memo_title,
+                "content" : memo_content
+                 })} )
+            .then( res => res.json())
+            .then( data => {
+                console.log(data)       // 응답 내용 출력
+                alert('메모 등록 완료')   // 알림창 
+                // 현 페이지 새로고침
+                window.location.reload();
+            })
+            }
+    </script>
 </body>
 </html>
