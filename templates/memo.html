@@ -216,7 +216,8 @@
                 <textarea id="content-{{ memo.id }}" class="form-control memo-content"
                     readonly>{{ memo.content }}</textarea>
                 <div class="edit-buttons">
-                    <button class="btn btn-edit" onclick="toggleEditUpdateMemo({{ memo.id }});"><i class="fas fa-edit"></i></button>
+                    <button class="btn btn-edit" onclick="toggleEditUpdateMemo({{ memo.id }});"><i
+                            class="fas fa-edit"></i></button>
                     <button class="btn btn-delete" onclick="deleteMemo({{ memo.id }});"><i
                             class="fas fa-trash-alt"></i></button>
                 </div>
@@ -256,34 +257,63 @@
         function deleteMemo(memo_id) {
             console.log(memo_id, "메모를 삭제하였습니다")
             // 메모 삭제 url 호출 -> 화면 갱신
-            fetch("/memo/"+memo_id, { // `$/memo/{memo_id}
+            fetch("/memo/" + memo_id, { // `$/memo/{memo_id}
                 method: "DELETE"
             })
                 .then(res => res.json()) // 역직렬화 텍스트 -> {} : 객체로 변환
                 // res.json() === data 같은 값
-                .then(data => { 
+                .then(data => {
                     alert(data.msg), // 객체에서 멤버로 접근해서 출력
-                    // 현 페이지 새로고침
-                    window.location.reload();
+                        // 현 페이지 새로고침
+                        window.location.reload();
                 })
         }
 
-        function toggleEditUpdateMemo(memo_id) {    
+        function toggleEditUpdateMemo(memo_id) {
             console.log("편집 토글 + 메모 업데이트", memo_id)
             // 1. 요소 특정 -> input, textarea
-            let titleElement    =  document.getElementById("title-" + memo_id);
-            let contentElement  =  document.getElementById("content-" + memo_id);
+            let titleElement = document.getElementById("title-" + memo_id);
+            let contentElement = document.getElementById("content-" + memo_id);
             console.log(titleElement.readOnly);
-            let curIsEdit       =  titleElement.readOnly; // 현재 편집모드
+            let curIsEdit = titleElement.readOnly; // 현재 편집모드
             // 토글 처리
             // T -> F / F -> T 바꿔주는 처리
-            titleElement.readOnly   = !curIsEdit;
+            // !curIsEdit => ! + true 
+            titleElement.readOnly = !curIsEdit;
             contentElement.readOnly = !curIsEdit;
-            if (curIsEdit) { // 편집 가능할때 편집 진행
-                 
+            // 변수 = 값 => 변수값이 바뀜
+            if (!curIsEdit) { // 편집 한 후 -> 수정된 내용을 반영 / not으로 false에서 true로 갈때 편집 수행
+                console.log("편집된 내용을 수정!")
+                // 1. 편집한 내용을 획득
+                let editTitleElement = document.getElementById("title-" + memo_id).value;
+                let editContentElement = document.getElementById("content-" + memo_id).value;
+                console.log("수정된 내용을 반영, !", editTitleElement, editContentElement);
+
+                // 2. 통신 -> 결과 처리(새로고침)
+                fetch("/memo/" + memo_id , {
+                    method: "PUT",
+                    headers: { // 서버측에게 전달하는 데이터는 JSON형식임을 통보
+                        "Content-Type": "application/json"
+                    },
+                    // body = 객체 = 딕셔너리 = json => 문자열로 변환해서 통신 처리함
+                    //        객체를 문자열로 변환하는거 : 객체 직렬화
+                    //        문자열을 객체로 변환하는거 : 객체 역직렬화
+                    body: JSON.stringify({
+                        "title": editTitleElement,
+                        "content": editContentElement
+                    })
+                })
+                    .then(res => res.json())
+                    .then(data => {
+                        console.log(data)       // 응답 내용 출력
+                        alert('메모 수정 완료')   // 알림창 
+                        // 현 페이지 새로고침
+                        window.location.reload();
+                    })
             }
+
         }
     </script>
-</body> 
+</body>
 
 </html>
