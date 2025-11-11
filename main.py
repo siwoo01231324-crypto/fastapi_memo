@@ -162,8 +162,19 @@ async def signup(user:UserInsert, db_conn : Session = Depends(get_connection)):
 
 # 로그인 -> 사용자 정보(비밀번호) 때문에 post
 @app.post("/signin")
-async def signin():
-    pass
+async def signin(login_data:UserLogin, db_conn : Session = Depends(get_connection)):
+    # 1. 로그인 데이터중 고유한 값 -> username 존재하는지 체크
+    target_user = db_conn.query(User).filter(User.username == login_data.username).first()
+    # 2. 해당 유저가 존재하고, 비밀번호가 해싱된 비밀번호와 대조시 일치하면 
+    if target_user and check_vaild_password(login_data.password, target_user.hashed_password):
+        # 2-1. 둘 다 참이면 => 고객 ok => 세션 생성
+        # 2-2. 더미로 응답
+            return {"msg":"로그인 성공"}
+    return {"msg":"로그인 실패"}
+
+
+
+
 # 로그아웃  -> 반드시 js로 처리한다 -> 브라우저 주소창에 넣어서 구동 x -> get으로 로그아웃 시도하면 안된다.
 @app.post("/logout")
 async def logout():
