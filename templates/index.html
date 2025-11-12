@@ -1,48 +1,54 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="UTF-8">
     <title>마이 메모 앱</title>
     <style>
-        body { 
-            font-family: 'Noto Sans KR', sans-serif; 
-            background-color: #f8f9fa; 
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #f8f9fa;
             margin: 0;
             padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
             text-align: center;
         }
+
         .container {
-            max-width: 400px; 
+            max-width: 400px;
             padding: 2rem;
-            background-color: #fff; 
+            background-color: #fff;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             margin: 1rem;
             width: 100%;
         }
+
         h1 {
             font-size: 1.5rem;
             color: #007bff;
             margin-bottom: 2rem;
         }
+
         p {
             margin-bottom: 2rem;
             color: #666;
         }
+
         .form-group {
             margin-bottom: 1rem;
             width: 100%;
         }
+
         .form-group label {
             margin-bottom: .5rem;
             color: #888;
             text-align: left;
             display: block;
         }
+
         .form-group input {
             padding: 0.75rem;
             border: 1px solid #ced4da;
@@ -50,12 +56,15 @@
             width: 100%;
             box-sizing: border-box;
         }
+
         .form-group input:focus {
             border-color: #80bdff;
-            box-shadow: 0 0 0 2px rgba(0,123,255,.25);
+            box-shadow: 0 0 0 2px rgba(0, 123, 255, .25);
         }
+
         .buttons button {
-            width: 100%; /* Adjusting button width based on padding */
+            width: 100%;
+            /* Adjusting button width based on padding */
             padding: 0.75rem;
             border: none;
             border-radius: 5px;
@@ -67,14 +76,17 @@
             cursor: pointer;
             box-sizing: border-box;
         }
+
         .buttons button:hover {
             background-color: #0056b3;
         }
+
         @media (max-width: 768px) {
             .container {
                 width: 90%;
                 padding: 1.5rem;
             }
+
             h1 {
                 font-size: 1.25rem;
             }
@@ -82,40 +94,69 @@
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
 </head>
+
 <body>
     <div class="container">
         <form id="loginForm" onsubmit="submitLoginForm(event)">
             <div class="form-group">
-                <label for="username">사용자 이름:</label>
-                <input type="text" id="username" name="username" required>
+                <input type="text" id="username" name="username" placeholder="사용자 이름">
             </div>
             <div class="form-group">
-                <label for="password">비밀번호:</label>
-                <input type="password" id="password" name="password" required>
+                <input type="password" id="password" name="password" placeholder="비밀번호">
             </div>
             <div class="buttons">
                 <button type="submit">로그인</button>
             </div>
         </form>
-        <br><br>
         <h4>회원가입</h4>
         <form id="signupForm" onsubmit="submitSignupForm(event)">
+            <!-- 스마트폰의 가상 키패드를 위한 설정+유효성+편의성 => type="phone"-->
             <div class="form-group">
-                <label for="signup_username">사용자 이름:</label>
-                <input type="text" id="signup_username" name="username" required>
+                <input type="text" id="signup_username" name="username" placeholder="사용자 이름" required>
             </div>
             <div class="form-group">
-                <label for="signup_email">이메일:</label>
-                <input type="email" id="signup_email" name="email" required>
+                <input type="email" id="signup_email" name="email" placeholder="이메일" required>
             </div>
             <div class="form-group">
-                <label for="signup_password">비밀번호:</label>
-                <input type="password" id="signup_password" name="password" required>
+                <input type="password" id="signup_password" name="password" placeholder="비밀번호">
             </div>
             <div class="buttons">
                 <button type="submit">회원가입</button>
             </div>
         </form>
     </div>
+    <script>
+        // 편의상(여러번 테스트한다는 전제) 입력창을 미리 채움
+        document.getElementById("signup_username").value = "guest";
+        document.getElementById("signup_email").value = "a@a.com";
+        document.getElementById("signup_password").value = "1234";
+
+        // 회원가입 처리용 이벤트 함수 submitSignupForm, 혹은 콜백함수라고도 표현함
+        function submitSignupForm(evt) {
+            // submit 이벤트 발생 == form 전송 => 화면 껌뻑임 => 새로운 페이지 요쳥되었다는 의미 <- 무효화 해야함
+            // 무효화하면 얻는 이점 => 원하는 시점에 통신이 가능 -=> 화면 껌뻑 x => ajax 사용 가능해짐
+            evt.preventDefault();
+            console.log('회원가입처리')
+            // 1. 입력한 값 획득 => {...} 구성
+            // 실습 1분, 방법 1
+            const param = {
+                username: document.getElementById("signup_username").value,
+                email: document.getElementById("signup_email").value,
+                password: document.getElementById("signup_password").value
+            }
+            console.log(param)
+            // 방법 2 -> form 태그로 감싸져있는 input 태그에서 데이터 획득 -> form 데이터
+            const formData = new FormData(evt.target);   // form 태그에 걸려있는 함수가 evt 참조 evt.target -> <form>
+            const param2 = {
+                // input 태그의 name 속성값으로 추출
+                username : formData.get("username"),
+                email    : formData.get("email"),
+                password : formData.get("password")
+            }
+            console.log(param2)
+            return false;
+        }
+    </script>
 </body>
+
 </html>
