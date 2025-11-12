@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request, Depends
+from fastapi import FastAPI, Request, Depends, HTTPException
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy import create_engine, Column, Integer, String
@@ -178,9 +178,12 @@ async def signin(req:Request,login_data:UserLogin, db_conn : Session = Depends(g
     if target_user and check_vaild_password(login_data.password, target_user.hashed_password):
         # 2-1. 둘 다 참이면 => 고객 ok => 세션 생성
         req.session["username"] = login_data.username
-        # 2-2. 더미로 응답
+        # 2-2. 더미로 응답 -> 더미는 응답코드 200이다
         return {"msg":"로그인 성공"}
-    return {"msg":"로그인 실패"}
+    # 실제 로그인하니까 더미데이터도 수정해줘야됨
+    # 예외 상황을 발생하여 응답 (401 => 권한 없음)
+    # HTTPException => 응답 헤데러 설정이 아닌, 메세지에 원하는 응답코드를 설정한 유형
+    return HTTPException(401, "로그인 실패 (해당 id가 존재하지 않거나, 비밀번호가 다릅니다.)")
 
 @app.get("/login/")
 def home(req : Request,
