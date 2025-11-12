@@ -109,7 +109,7 @@
             </div>
         </form>
         <h4>회원가입</h4>
-        <form id="signupForm" onsubmit="submitSignupForm(event)">
+        <form id="signupForm" onsubmit="submitSignupForm(event)" method="post">
             <!-- 스마트폰의 가상 키패드를 위한 설정+유효성+편의성 => type="phone"-->
             <div class="form-group">
                 <input type="text" id="signup_username" name="username" placeholder="사용자 이름" required>
@@ -219,7 +219,7 @@
                         if (result.body.status_code === 401) {
                             alert(result.body.detail);
                             // 현재 페이지 새로고침
-                            
+                            window.location.reload();
                         }else{
                             console.log("로그인 성공", result.body);
                             alert("로그인 성공")
