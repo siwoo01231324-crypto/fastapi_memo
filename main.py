@@ -146,7 +146,7 @@ def home(req : Request,
 
 # Auth 관련 라우트
 # 회원 가입 -> 사용자 정보(비밀번호) 때문에 post 
-@app.post("/signup")
+@app.post("/signup/")
 async def signup(user:UserInsert, db_conn : Session = Depends(get_connection)):
     # 0. 비밀번호 암호화 선행되어야함 (passlib) 패키지 사용해야함
     hashed_password = get_hashed_password(user.password)
@@ -170,7 +170,7 @@ async def signup(user:UserInsert, db_conn : Session = Depends(get_connection)):
 
 
 # 로그인 -> 사용자 정보(비밀번호) 때문에 post
-@app.post("/signin")
+@app.post("/signin/")
 async def signin(req:Request,login_data:UserLogin, db_conn : Session = Depends(get_connection)):
     # 1. 로그인 데이터중 고유한 값 -> username 존재하는지 체크
     target_user = db_conn.query(User).filter(User.username == login_data.username).first()
@@ -189,7 +189,7 @@ def home(req : Request,
 
 
 # 로그아웃  -> 반드시 js로 처리한다 -> 브라우저 주소창에 넣어서 구동 x -> get으로 로그아웃 시도하면 안된다.
-@app.post("/logout")
+@app.post("/logout/")
 async def logout(req:Request):
     # 세션 제거
     req.session.pop("username", None)

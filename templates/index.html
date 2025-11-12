@@ -146,14 +146,42 @@
             }
             console.log(param)
             // 방법 2 -> form 태그로 감싸져있는 input 태그에서 데이터 획득 -> form 데이터
-            const formData = new FormData(evt.target);   // form 태그에 걸려있는 함수가 evt 참조 evt.target -> <form>
-            const param2 = {
-                // input 태그의 name 속성값으로 추출
-                username : formData.get("username"),
-                email    : formData.get("email"),
-                password : formData.get("password")
-            }
-            console.log(param2)
+            // const formData = new FormData(evt.target);   // form 태그에 걸려있는 함수가 evt 참조 evt.target -> <form>
+            // const param2 = {
+            //     // input 태그의 name 속성값으로 추출
+            //     username : formData.get("username"),
+            //     email    : formData.get("email"),
+            //     password : formData.get("password")
+            // }
+            // console.log(param2)
+
+
+            // 2. 서버측에게 데이터 전송 => 회원가입 처리 요청 (POST, /signup/)
+            fetch("/signup/", {
+                method : "POST",
+                headers: {
+                    "Content-Type" : "application/json"
+                },
+                body : JSON.stringify(param)
+
+            })
+            // 원래 존재했던 res의  많은 데이터중 응답코드와 실응답값만 재구성
+            .then( res => res.json()
+                .then( resJson => ({code : res.status, body:resJson}) ) )
+            // 메세지 가공
+            .then( result => {
+                if (result.code == 200){
+                console.log("가입 성공", result.body );
+                alert("회원 가입 성공")
+                // document.location.href = "/memo/"; // 향후 브런치 통합 후 구성
+                }else{
+                    // 통신은 되었지만, 회원가입 실패 경우 잡기위함
+                    throw new Error("회원 가입 실패")
+                }
+            } )
+            .catch( err => {
+                console.log("가입 실패", err)
+                alert(err.message)})
             return false;
         }
     </script>
