@@ -14,7 +14,7 @@ app.mount("/static",StaticFiles(directory="static"),name="static")
 
 # ORM 작업 (전역 변수 위치)
 # 데이터베이스 연동 URL 구성 = 프로토콜://아이디:비밀번호@IP/데이터베이스명
-DATABASE_URL = "mysql+pymysql://root:1234@127.0.0.1/memos"
+DATABASE_URL = "mysql+pymysql://admin:fdsa13241324!@memos-3.cb2k0g62uv9o.eu-west-2.rds.amazonaws.com/memos"
 # 데이터베이스에 실제 연결을 담당할 엔진
 engine      = create_engine( DATABASE_URL )
 # 테이블 구성에 필요한 재료 준비 -> 모든 ORM 모델들이 상속받아야 할 클레스 구성
