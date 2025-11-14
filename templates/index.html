@@ -205,7 +205,7 @@
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify(param)
-
+                
             })
                 .then(res => {
                     console.log(res);
@@ -232,9 +232,8 @@
                 })
                 .catch(err => {
                     console.log("로그인 실패", err);
-                    alert("로그인 실패" + err.message);
+                    alert("실패" + err.message);
                 });
-
             return false;
         }
     </script>
