@@ -7,6 +7,11 @@ from typing import Optional
 from sqlalchemy.orm import Session
 # 데이터를 담는 그릇의 역활 -> DTO 구성
 from pydantic import BaseModel
+# .env 파일을 읽어오기
+import os
+from dotenv import load_dotenv
+# .env 파일에서 환경 변수 파일 로드
+load_dotenv()
 
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
@@ -14,7 +19,11 @@ app.mount("/static",StaticFiles(directory="static"),name="static")
 
 # ORM 작업 (전역 변수 위치)
 # 데이터베이스 연동 URL 구성 = 프로토콜://아이디:비밀번호@IP/데이터베이스명
-DATABASE_URL = "mysql+pymysql://admin:fdsa13241324!@memos-3.cb2k0g62uv9o.eu-west-2.rds.amazonaws.com/memos"
+host = os.getenv('DATABASE_HOST')
+user = os.getenv('DATABASE_NAME')
+pwd = os.getenv('DATABASE_PASSWORD')
+
+DATABASE_URL = f"mysql+pymysql://{user}:{pwd}@{host}/memos"
 # 데이터베이스에 실제 연결을 담당할 엔진
 engine      = create_engine( DATABASE_URL )
 # 테이블 구성에 필요한 재료 준비 -> 모든 ORM 모델들이 상속받아야 할 클레스 구성
